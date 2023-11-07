@@ -10,20 +10,21 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Util.getConnection();
-        UserDao userDao = new UserDaoJDBCImpl();
 
-        userDao.createUsersTable();
+        UserServiceImpl userService = new UserServiceImpl();
 
-        userDao.saveUser("Двниил","Великий",(byte) 22);
-        userDao.saveUser("Артём","Быстрый",(byte) 18);
-        userDao.saveUser("Михаил","Гордый",(byte) 31);
-        userDao.saveUser("Конор","Грозный",(byte) 27);
+        
+        userService.createUsersTable();
 
-        userDao.createUsersTable();
-        userDao.getAllUsers();
-        userDao.cleanUsersTable();
-        userDao.dropUsersTable();
+        userService.saveUser("Двниил","Великий",(byte) 22);
+        userService.saveUser("Артём","Быстрый",(byte) 18);
+        userService.saveUser("Михаил","Гордый",(byte) 31);
+        userService.saveUser("Конор","Грозный",(byte) 27);
+
+        userService.createUsersTable();
+        userService.getAllUsers();
+        userService.cleanUsersTable();
+        userService.dropUsersTable();
 
 
     }

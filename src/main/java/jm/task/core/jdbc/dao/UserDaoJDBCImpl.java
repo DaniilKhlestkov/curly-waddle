@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static final Connection connection = Util.getConnection();
+    private final Connection connection = Util.getConnection();
     private static String sql;
-    public UserDaoJDBCImpl () {
-
-    }
     public void createUsersTable() {
         try (Statement statement = connection.createStatement()){
             sql = "CREATE TABLE IF NOT EXISTS users (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), last_name VARCHAR(255), age INT)";
