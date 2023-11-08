@@ -40,7 +40,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         sql = "INSERT INTO users (name, last_name, age) VALUES (?, ?, ?)";
         try (Connection connection1 = Util.getConnection();
-             PreparedStatement pstm = connection.prepareStatement(sql)) {
+             PreparedStatement pstm = connection1.prepareStatement(sql)) {
             connection.setAutoCommit(false);
 
             pstm.setString(1, name);
@@ -81,7 +81,7 @@ public class UserDaoJDBCImpl implements UserDao {
         sql = "SELECT * FROM users";
 
         try (Connection connection1 = Util.getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
+             ResultSet resultSet = connection1.createStatement().executeQuery(sql)) {
             while (resultSet.next()) {
                 User user = new User(resultSet.getString("name"),
                         resultSet.getString("last_name"), resultSet.getByte("age"));
@@ -97,7 +97,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try (Connection connection1 = Util.getConnection();
-             Statement statement = connection.createStatement()) {
+             Statement statement = connection1.createStatement()) {
             connection.setAutoCommit(false);
 
             sql = "TRUNCATE TABLE users";
