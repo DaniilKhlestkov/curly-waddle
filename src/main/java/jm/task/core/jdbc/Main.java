@@ -13,7 +13,6 @@ public class Main {
 
         UserServiceImpl userService = new UserServiceImpl();
 
-        
         userService.createUsersTable();
 
         userService.saveUser("Двниил","Великий",(byte) 22);
