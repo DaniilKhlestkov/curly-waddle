@@ -3,19 +3,18 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+
 import java.util.Collections;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    public UserDaoHibernateImpl() {
-    }
-
-    Transaction transaction = null;
+    private final SessionFactory sessionFactory = Util.getSessionFactory();
     @Override
     public void createUsersTable() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
             session.createSQLQuery("CREATE TABLE if NOT EXISTS `mydatabase`.`users` (\n" +
                             "  `id` BIGINT NOT NULL AUTO_INCREMENT,\n" +
                             "  `name` VARCHAR(45) NOT NULL,\n" +
@@ -24,7 +23,7 @@ public class UserDaoHibernateImpl implements UserDao {
                             "  PRIMARY KEY (`id`),\n" +
                             "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);")
                     .executeUpdate();
-            transaction.commit();
+            session.getTransaction().commit();
             System.out.println("Table CREATE");
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,10 +32,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS users");
-            transaction.commit();
+            session.getTransaction().commit();
             System.out.println("Table drop");
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,7 +44,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (Session session = Util.getSessionFactory().openSession()) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.save(new User(name, lastName, age));
             transaction.commit();
@@ -59,7 +59,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getSessionFactory().openSession()) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.remove(session.get(User.class, id));
             transaction.commit();
@@ -73,10 +74,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
             List<User> userList = session.createQuery("SELECT i FROM User i", User.class).getResultList();
-            transaction.commit();
+            session.getTransaction().commit();
             System.out.println("Users GET ALL");
             return userList;
         } catch (Exception e) {
@@ -87,11 +88,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
             session.createSQLQuery("DELETE FROM users")
                     .executeUpdate();
-            transaction.commit();
+            session.getTransaction().commit();
             System.out.println("Users DELETED");
         } catch (Exception e) {
             e.printStackTrace();
